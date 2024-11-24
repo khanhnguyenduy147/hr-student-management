@@ -13,6 +13,11 @@ public class TestClass2Request extends AuditInfo<TestClass2Request> {
 }
 
 class ChildClass {
-    String name;
+    ChildClass22 name;
     Long amount;
+}
+
+class ChildClass22 {
+    String name2;
+    Long amount2;
 }
