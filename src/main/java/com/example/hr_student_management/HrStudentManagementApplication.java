@@ -1,25 +1,24 @@
 package com.example.hr_student_management;
 
-import com.example.hr_student_management.model.ClassDescription;
-import com.example.hr_student_management.model.TestClass2;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.hr_student_management.service.BussinessFunctionService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.List;
-
 @SpringBootApplication
-public class HrStudentManagementApplication {
+@RequiredArgsConstructor
+public class HrStudentManagementApplication implements CommandLineRunner {
 
-	public static void main(String[] args) throws JsonProcessingException {
-//		SpringApplication.run(HrStudentManagementApplication.class, args);
-		List<ClassDescription.FieldDescription> fields = ClassDescription.describeClassFields(TestClass2.class);
+	private final BussinessFunctionService bussinessFunctionService;
 
-		// Chuyển đổi danh sách FieldDescription sang JSON
-		ObjectMapper objectMapper = new ObjectMapper();
-		String jsonOutput = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(fields);
+	public static void main(String[] args) {
+		SpringApplication.run(HrStudentManagementApplication.class, args);
+	}
 
-		// In ra JSON
-		System.out.println(jsonOutput);
+	@Override
+	public void run(String... args) throws Exception {
+		// Gọi logic xử lý sau khi Spring Boot đã khởi chạy
+		bussinessFunctionService.processClassDescriptions();
 	}
 }

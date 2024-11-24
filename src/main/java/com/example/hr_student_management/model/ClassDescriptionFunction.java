@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ClassDescription {
+public class ClassDescriptionFunction {
 
     public static List<FieldDescription> describeClassFields(Class<?> clazz) {
         return describeClassFields(clazz, new HashSet<>());
@@ -41,7 +41,7 @@ public class ClassDescription {
 
                 // Xử lý thông tin trường
                 String inputType = getFieldType(field);
-                String parentId = null;
+                String parentId = null; // Giá trị mặc định
                 List<FieldDescription.DataOption> dataOptions = new ArrayList<>();
                 String api = null, apiLabel = null, apiValue = null;
 
@@ -65,7 +65,8 @@ public class ClassDescription {
                 if (field.getGenericType() instanceof ParameterizedType parameterizedType) {
                     var elementType = parameterizedType.getActualTypeArguments()[0];
                     if (elementType instanceof Class<?> elementClass && !elementClass.getTypeName().startsWith("java.")) {
-                        parentId = field.getName();
+//                        parentId = field.getName();
+                        parentId = getFieldType(field);
                         fieldDescriptions.addAll(describeClassFields(elementClass, processedClasses));
                     }
                 }
@@ -75,8 +76,12 @@ public class ClassDescription {
                         && !field.getType().isEnum()
                         && !processedClasses.contains(field.getType())) {
 
-                    parentId = field.getName();
-                    fieldDescriptions.addAll(describeClassFields(field.getType(), processedClasses));
+                    // Đặt parentId cho các trường con
+                    String currentFieldName = field.getName();
+                    fieldDescriptions.addAll(describeClassFields(field.getType(), processedClasses).stream()
+//                            .map(childField -> childField.toBuilder().parentId(currentFieldName).build())
+                            .map(childField -> childField.toBuilder().parentId(getFieldType(field)).build())
+                            .toList());
                 }
 
                 // Thêm mô tả trường vào danh sách
@@ -85,7 +90,7 @@ public class ClassDescription {
                         .key(field.getName() + "_1")
                         .name(formatFieldName(field.getName()))
                         .inputType(inputType)
-                        .type(dataOptions.isEmpty() ? "single" : "multi")
+                        .type(field.getGenericType() instanceof ParameterizedType ? "multi" : "single")
                         .required(field.isAnnotationPresent(NotNull.class) || field.isAnnotationPresent(NotBlank.class))
                         .minLength(field.isAnnotationPresent(Size.class) ? field.getAnnotation(Size.class).min() : null)
                         .maxLength(field.isAnnotationPresent(Size.class) ? field.getAnnotation(Size.class).max() : null)
@@ -112,6 +117,23 @@ public class ClassDescription {
         if (field.isAnnotationPresent(Pattern.class)) {
             return "subtext";
         }
+
+        // Kiểm tra nếu là danh sách với kiểu phần tử cụ thể
+        if (field.getGenericType() instanceof ParameterizedType parameterizedType) {
+            var elementType = parameterizedType.getActualTypeArguments()[0];
+            if (elementType instanceof Class<?> elementClass) {
+                // Xử lý kiểu phần tử
+                return switch (elementClass.getSimpleName()) {
+                    case "Long", "Integer" -> "number";
+                    case "String" -> "text";
+                    case "Double", "BigDecimal" -> "decimal";
+                    default -> "Object"; // Mặc định nếu không khớp
+                    // default -> field.getType().getSimpleName();
+                };
+            }
+        }
+
+        // Xử lý các kiểu cơ bản khác
         return switch (field.getType().getSimpleName()) {
             case "String" -> "text";
             case "Integer", "Long" -> "number";
@@ -119,7 +141,9 @@ public class ClassDescription {
             case "boolean", "Boolean" -> "toggle";
             case "Date", "LocalDate", "LocalDateTime", "OffsetDateTime" -> "date";
             case "List" -> "multi";
-            default -> field.getType().getSimpleName();
+            default -> "Object";
+
+            // default -> field.getType().getSimpleName();
         };
     }
 
