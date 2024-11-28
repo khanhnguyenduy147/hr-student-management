@@ -1,9 +1,14 @@
 package com.example.hr_student_management.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -14,11 +19,9 @@ public class Course {
     @Id
     private Long id;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "DAY_START")
-    private Date dayStart;
+    private LocalDate dayStart;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "DAY_END")
-    private Date dayEnd;
+    private LocalDate dayEnd;
 }

@@ -10,20 +10,26 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "REFERRER")
-public class Referrer {
+@Table(name = "HEAD_DEPARTMENT")
+public class HeadDepartment {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Long id;
+    Long id;
 
-    @Column(name = "FULL_NAME")
-    private String fullName;
+    @Column(name = "FULLNAME")
+    String fullName;
 
     @Column(name = "MOBILE_NUMBER")
-    private String mobileNumber;
+    String mobileNumber;
 
-    @Column(name = "WORKPLACE")
-    private String workplace;
+    @Column(name = "ID_BRANCH_COMPANY")
+    Long idBranchCompany;
+
+    @Column(name = "EMAIL")
+    String email;
+
+    @Column(name = "CONTACT")
+    String contact;
 }

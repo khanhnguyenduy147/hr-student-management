@@ -6,16 +6,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
-@Table(name = "COMPANY")
-public class CompanyArea {
+@Data
+@Table(name = "HUMAN_DIVISON")
+public class HumanDivison {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", length = 10)
-    private Long id;
+    @Column(name = "ID")
+    Long id;
 
-    @Column(name = "DISTRICT_NAME", length = 200)
-    private String districtName;
+    @Column(name = "ID_BRANCH_COMPANY")
+    Long idBranchCompany;
+
+    @Column(name = "ID_MANAGER")
+    Long idManager;
+
+    @Column(name = "MAIN_DISTRICT")
+    String mainDistrict;
 }

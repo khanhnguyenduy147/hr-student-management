@@ -1,23 +1,32 @@
 package com.example.hr_student_management.model.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jdk.jfr.Enabled;
 import lombok.Data;
 
-@Entity
+@Enabled
 @Data
-@Table(name = "TRAIN")
-public class Train {
+@Table(name = "HR_STAFF")
+public class HrStaff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Long id;
+    Long id;
 
-    @Column(name = "STUDENT_STAFF_ID")
-    private Long studentStaffId;
+    @Column(name = "FULLNAME")
+    String fullName;
+
+    @Column(name = "ID_BRANCH_COMPANY")
+    Long idBranchCompany;
+
+    @Column(name = "EMAIL")
+    String email;
+
+    @Column(name = "CONTACT")
+    String contact;
 }
